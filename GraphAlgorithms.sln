@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAlgorithms", "GraphAlgorithms\GraphAlgorithms.csproj", "{F971E7F8-48E1-4EB2-B259-5E041E8EE005}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAlgorithms.test", "GraphAlgorithms.test\GraphAlgorithms.test.csproj", "{31464AC1-8424-421F-9391-4E258D49C0AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F971E7F8-48E1-4EB2-B259-5E041E8EE005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F971E7F8-48E1-4EB2-B259-5E041E8EE005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F971E7F8-48E1-4EB2-B259-5E041E8EE005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F971E7F8-48E1-4EB2-B259-5E041E8EE005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31464AC1-8424-421F-9391-4E258D49C0AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31464AC1-8424-421F-9391-4E258D49C0AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31464AC1-8424-421F-9391-4E258D49C0AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31464AC1-8424-421F-9391-4E258D49C0AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

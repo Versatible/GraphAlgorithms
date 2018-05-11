@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>Xavier Schott</Authors>
+    <PackageLicenseUrl>https://github.com/Versatible/GraphAlgorithms/blob/master/LICENSE</PackageLicenseUrl>
+    <Owners>Versatible Limited, Co.</Owners>
+    <PackageProjectUrl>https://github.com/Versatible/GraphAlgorithms</PackageProjectUrl>
+    <PackageReleaseNotes>Alpha</PackageReleaseNotes>
+    <Summary>Targeted and lightweight graph algorithms</Summary>
+    <Title>Graph Algorithms</Title>
+    <Description>Targeted algorithms for undirected, weighted and unweighted graphs, nodes and edges.</Description>
+    <PackageId>GraphAlgorithms</PackageId>
+    <PackOnBuild>true</PackOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+</Project>
