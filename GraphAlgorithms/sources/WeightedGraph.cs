@@ -8,12 +8,12 @@ namespace GraphAlgorithms
     /// <summary>
     /// Weighted graph.
     /// </summary>
-    public class WeightedGraph<CONTENT> : Graph<CONTENT>
+    public class WeightedGraph<CONTENT> : Graph<CONTENT> where CONTENT : IEquatable<CONTENT>
     {
         /// <summary>
         /// Boolean Edge comparator: returns true if the edge is to be updated, false otherwise
         /// </summary>
-        public delegate bool UpdateEdgePolicy(int oldEdge, int newEdge);
+        public delegate bool UpdateEdgePolicy(double oldEdge, double newEdge);
         private readonly UpdateEdgePolicy updateEdgePolicy;
 
         public WeightedGraph() : base()
@@ -30,7 +30,7 @@ namespace GraphAlgorithms
             Debug.Assert(null != updateEdgePolicy);
             this.updateEdgePolicy = updateEdgePolicy;
         }
- 
+
         public override Node<CONTENT> Node(CONTENT content) => new WeightedNode<CONTENT>(content);
 
         protected override void AddDirectedEdge(Node<CONTENT> from, Node<CONTENT> to)
@@ -43,12 +43,12 @@ namespace GraphAlgorithms
             throw new NotSupportedException("WeightedGraph require cost");
         }
 
-        protected virtual void AddDirectedEdge(WeightedNode<CONTENT> from, WeightedNode<CONTENT> to, int cost)
+        protected virtual void AddDirectedEdge(WeightedNode<CONTENT> from, WeightedNode<CONTENT> to, double cost)
         {
             from.AddDirectedEdge(to, cost);
         }
 
-        protected void UpdateDirectedEdge(WeightedNode<CONTENT> from, WeightedNode<CONTENT> to, int cost)
+        protected void UpdateDirectedEdge(WeightedNode<CONTENT> from, WeightedNode<CONTENT> to, double cost)
         {
             if (updateEdgePolicy != null)
             {
@@ -68,19 +68,20 @@ namespace GraphAlgorithms
             }
         }
 
-        public void AddUndirectedEdge(WeightedNode<CONTENT> between, WeightedNode<CONTENT> and, int cost)
+        public void AddUndirectedEdge(WeightedNode<CONTENT> between, WeightedNode<CONTENT> and, double cost)
         {
             AddDirectedEdge(between, and, cost);
             AddDirectedEdge(and, between, cost);
         }
 
-        public void UpdateUndirectedEdge(WeightedNode<CONTENT> between, WeightedNode<CONTENT> and, int cost)
+        public void UpdateUndirectedEdge(WeightedNode<CONTENT> between, WeightedNode<CONTENT> and, double cost)
         {
             UpdateDirectedEdge(between, and, cost);
             UpdateDirectedEdge(and, between, cost);
         }
 
-        public override void UndirectedUnion(Graph<CONTENT> with) {
+        public override void UndirectedUnion(Graph<CONTENT> with)
+        {
             throw new NotSupportedException("WeightedGraph require cost");
         }
 
@@ -103,7 +104,7 @@ namespace GraphAlgorithms
 
                 foreach (var destination in dictionary)
                 {
-                    var distance = (int)(distanceToOrigin + destination.Value);
+                    var distance = distanceToOrigin + destination.Value;
                     AddUndirectedEdge(between: nodeOrigin, and: destination.Key, cost: distance);
                 }
             }
@@ -145,27 +146,30 @@ namespace GraphAlgorithms
                 var node = Find(edge.Item1.Content) as WeightedNode<CONTENT>;
                 var neighbor = Find(edge.Item2.Content) as WeightedNode<CONTENT>;
                 var cost = edge.Item3;
-                if (node.HasNeighbor(neighbor)) {
-                    UpdateUndirectedEdge(between: node, and: neighbor, cost:cost);
-                } else {
-                    AddUndirectedEdge(between: node, and: neighbor, cost:cost);
+                if (node.HasNeighbor(neighbor))
+                {
+                    UpdateUndirectedEdge(between: node, and: neighbor, cost: cost);
+                }
+                else
+                {
+                    AddUndirectedEdge(between: node, and: neighbor, cost: cost);
                 }
             }
         }
 
         #region Traversal
         // Edges are connection between nodes, with a weight
-        public new Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, int>[] UndirectedEdges()
+        public new Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, double>[] UndirectedEdges()
         {
-            var edgesSet = new HashSet<Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, int>>();
+            var edgesSet = new HashSet<Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, double>>();
 
             foreach (var node in NodeSet)
             {
                 (node as WeightedNode<CONTENT>).ForEachNeighborAndCost(pair =>
                 {
-                    var oneWay = new Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, int>
+                    var oneWay = new Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, double>
                         (node as WeightedNode<CONTENT>, pair.Key as WeightedNode<CONTENT>, pair.Value);
-                    var theOther = new Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, int>
+                    var theOther = new Tuple<WeightedNode<CONTENT>, WeightedNode<CONTENT>, double>
                         (pair.Key as WeightedNode<CONTENT>, node as WeightedNode<CONTENT>, pair.Value);
                     if (!edgesSet.Contains(oneWay) && !edgesSet.Contains(theOther))
                     {

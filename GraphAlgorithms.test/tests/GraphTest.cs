@@ -97,23 +97,23 @@ namespace GraphAlgorithms.test
             Assert.AreEqual("ABECHDGF", bfs);
 
             var edges = graph.UndirectedEdges();
-            var traversal = $"{edges.Length} edges";
+            var actual = $"{edges.Length} edges";
             foreach (var edge in edges)
             {
-                traversal += $", {edge.Item1.Content.ToString()}-{edge.Item2.Content.ToString()}";
+                actual += $", {edge.Item1.Content.ToString()}-{edge.Item2.Content.ToString()}";
             }
             var expected = "10 edges, A-B, A-E, A-C, A-H, B-C, B-D, C-D, C-E, C-H, D-E";
-            Assert.AreEqual(expected, traversal);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test()]
         public void TestBFS()
         {
             var graph = MockGraph();
-            var traversal = "";
-            graph.BFS(node => traversal += node.Content);
+            var actual = "";
+            graph.BFS(node => actual += node.Content);
 
-            Assert.AreEqual("ABECDG", traversal);
+            Assert.AreEqual("ABECDG", actual);
         }
 
         [Test()]
@@ -151,9 +151,9 @@ namespace GraphAlgorithms.test
             Assert.AreEqual(2, b.NeighborsCount);
             Assert.AreEqual(2, e.NeighborsCount);
 
-            var traversal = "";
-            graph.BFS(node => traversal += node.Content);
-            Assert.AreEqual("BCDEG", traversal);
+            var actual = "";
+            graph.BFS(node => actual += node.Content);
+            Assert.AreEqual("BCDEG", actual);
         }
 
         [Test()]
@@ -170,9 +170,9 @@ namespace GraphAlgorithms.test
 
             Assert.AreEqual(0, d.NeighborsCount);
 
-            var traversal = "";
-            graph.BFS(node => traversal += node.Content);
-            Assert.AreEqual("ABEGCD", traversal);
+            var actual = "";
+            graph.BFS(node => actual += node.Content);
+            Assert.AreEqual("ABEGCD", actual);
         }
 
         [Test()]
@@ -180,13 +180,30 @@ namespace GraphAlgorithms.test
         {
             var graph = MockGraph();
             var edges = graph.UndirectedEdges();
-            var traversal = $"{edges.Length} edges";
+            var actual = $"{edges.Length} edges";
             foreach (var edge in edges)
             {
-                traversal += $", {edge.Item1.Content.ToString()}-{edge.Item2.Content.ToString()}";
+                actual += $", {edge.Item1.Content.ToString()}-{edge.Item2.Content.ToString()}";
             }
             var expected = "7 edges, A-B, A-E, B-C, B-D, C-D, C-E, D-E";
-            Assert.AreEqual(expected, traversal);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test()]
+        public void TestShortestPath()
+        {
+            var graph = MockGraph();
+            var a = graph.Find('A');
+            var c = graph.Find('C');
+
+            var actual = "";
+            var shortestPath = graph.ShortestPath(a, c);
+            foreach(var node in shortestPath) {
+                actual += node.Content;
+            }
+
+            var expected = "CB";
+            Assert.AreEqual(expected, actual);
         }
     }
 }

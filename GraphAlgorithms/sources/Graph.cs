@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GraphAlgorithms
 {
-    public class Graph<CONTENT>
+    public class Graph<CONTENT> where CONTENT : IEquatable<CONTENT>
     {
         public readonly HashSet<Node<CONTENT>> NodeSet;
         public int Count => NodeSet.Count;
@@ -78,23 +78,20 @@ namespace GraphAlgorithms
         /// public bool Contains(CONTENT value) => Find(value) != null;
         /// </summary>
         /// <returns>The found node by content, or null</returns>
-        /// <param name="value">Value.</param>
-        public Node<CONTENT> Find(CONTENT value)
+        /// <param name="content">Value.</param>
+        public Node<CONTENT> Find(CONTENT content)
         {
-            var first = NodeSet.FirstOrDefault(node =>
-            {
-                return EqualityComparer<CONTENT>.Default.Equals(node.Content, value);
-            });
-
-            return first;
+            return NodeSet.FirstOrDefault(node => node.Content.Equals(content));
         }
 
         /// <summary>
         /// Batches the creation of nodes
         /// </summary>
         /// <param name="contents">An enumerable of content</param>
-        public void BatchNodes(IEnumerable<CONTENT> contents) {
-            foreach(var content in contents) {
+        public void BatchNodes(IEnumerable<CONTENT> contents)
+        {
+            foreach (var content in contents)
+            {
                 AddNode(Node(content));
             }
         }
@@ -106,7 +103,7 @@ namespace GraphAlgorithms
         /// <param name="with">With.</param>
         public virtual void UndirectedUnion(Graph<CONTENT> with)
         {
- 
+
             // Add nodes to the graph
             var newNodes = new List<Node<CONTENT>>();
             with.BFS(node =>
@@ -125,7 +122,8 @@ namespace GraphAlgorithms
             {
                 var neighbors = new List<Node<CONTENT>>();
                 newNode.ForEachNeighbor(neighbor => neighbors.Add(neighbor));
-                foreach(var neighbor in neighbors) {
+                foreach (var neighbor in neighbors)
+                {
                     newNode.RemoveDirectedEdge(neighbor);
                 }
             }
@@ -179,7 +177,7 @@ namespace GraphAlgorithms
             }
         }
 
-        enum VertexState
+        private enum VertexState
         {
             White, Gray, Black
         }
@@ -223,6 +221,79 @@ namespace GraphAlgorithms
             }
             return edgesSet.ToArray();
         }
-        #endregion
+        #endregion Traversal
+
+        #region paths
+        public List<Node<CONTENT>> ShortestPath(Node<CONTENT> from, Node<CONTENT> destination)
+        {
+            return Path(destination, Dijkstra(from, destination));
+        }
+
+        /// <summary>
+        /// Calculate every shortest path to every node, optionally stopping when reaching destination
+        /// </summary>
+        /// <returns>The dijkstra.</returns>
+        /// <param name="from">From.</param>
+        /// <param name="destination">destination.</param>
+        public Dictionary<Node<CONTENT>, Node<CONTENT>> Dijkstra(Node<CONTENT> from, Node<CONTENT> destination)
+        {
+            var infinity = double.MaxValue;
+            var previous = new Dictionary<Node<CONTENT>, Node<CONTENT>>();
+            var distances = new Dictionary<Node<CONTENT>, double>();
+            var nodes = NodeSet.ToList();
+
+            // All distances but «from» to ∞
+            foreach (var node in NodeSet)
+                distances[node] = infinity;
+            distances[from] = 0;
+
+            while (nodes.Count != 0)
+            {
+                nodes.Sort((x, y) => ((distances[x] == distances[y])
+                           ? 0
+                            : ((distances[x] < distances[y])
+                              ? -1
+                               : 1)));
+
+                var smallest = nodes.First();
+                nodes.Remove(smallest);
+
+                if ((smallest == destination) || (distances[smallest] == infinity))
+                    break;
+
+                smallest.ForEachNeighbor((Node<CONTENT> neighbor) =>
+                {
+                    var distance = smallest.Cost(neighbor);
+                    var alt = distances[smallest] + distance;
+                    if (alt < distances[neighbor])
+                    {
+                        distances[neighbor] = alt;
+                        previous[neighbor] = smallest;
+                    }
+                });
+            }
+
+            return previous;
+        }
+
+        /// <summary>
+        /// Shortest path to the specified destination, from a dictionary of paths previously computed by Dijkstra
+        /// </summary>
+        /// <returns>The shortest path to the destination</returns>
+        /// <param name="destination">Destination.</param>
+        /// <param name="paths">Paths previously calculated by Dijkstra</param>
+        public List<Node<CONTENT>> Path(Node<CONTENT> destination, Dictionary<Node<CONTENT>, Node<CONTENT>> paths)
+        {
+            var path = new List<Node<CONTENT>>();
+            var via = destination;
+            while (paths.ContainsKey(via))
+            {
+                path.Add(via);
+                via = paths[via];
+            }
+            return path;
+        }
+
+        #endregion paths
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace GraphAlgorithms
+﻿using System;
+
+namespace GraphAlgorithms
 {
     /// <summary>
     /// Interpolation graph
     /// </summary>
-    public class AmortizedGraph<CONTENT> : WeightedGraph<CONTENT>
+    public class AmortizedGraph<CONTENT> : WeightedGraph<CONTENT> where CONTENT : IEquatable<CONTENT>
     {
         public AmortizedGraph() : base()
         {

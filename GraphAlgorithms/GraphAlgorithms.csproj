@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <PackageVersion>0.0.1</PackageVersion>
+    <PackageVersion>0.0.2</PackageVersion>
     <Authors>Xavier Schott</Authors>
     <PackageLicenseUrl>https://github.com/Versatible/GraphAlgorithms/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>Versatible Limited, Co.</Owners>
@@ -13,10 +13,11 @@
     <Description>Targeted algorithms for undirected, weighted and unweighted graphs, nodes and edges.</Description>
     <PackageId>GraphAlgorithms</PackageId>
     <PackOnBuild>true</PackOnBuild>
+    <PackageIconUrl>http://www.gravatar.com/avatar/fa2789939bc26cd4e0ce43e7cf27a81f</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Class1.cs" />

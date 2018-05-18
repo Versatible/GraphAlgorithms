@@ -28,12 +28,12 @@ namespace GraphAlgorithms.test
             graph.AddNode(g);
 
             graph.AddUndirectedEdge(a, b, 20);
-            graph.AddUndirectedEdge(a, e, 18);
-            graph.AddUndirectedEdge(b, c, 10);
+            graph.AddUndirectedEdge(a, e, 8);
+            graph.AddUndirectedEdge(b, c, 18);
             graph.AddUndirectedEdge(b, d, 21);
             graph.AddUndirectedEdge(c, d, 15);
             graph.AddUndirectedEdge(c, e, 30);
-            graph.AddUndirectedEdge(d, e, 17);
+            graph.AddUndirectedEdge(d, e, 12);
 
             return graph;
         }
@@ -52,9 +52,9 @@ namespace GraphAlgorithms.test
 
             Assert.AreEqual(0, d.NeighborsCount);
 
-            var traversal = "";
-            graph.BFS(node => traversal += node.Content);
-            Assert.AreEqual("ABEGCD", traversal);
+            var actual = "";
+            graph.BFS(node => actual += node.Content);
+            Assert.AreEqual("ABEGCD", actual);
         }
 
         [Test()]
@@ -90,9 +90,9 @@ namespace GraphAlgorithms.test
                 graph.UpdateUndirectedEdge(between: e, and: a, cost: cost);
             }
 
-            var traversal = "";
-            graph.BFS(node => traversal += node.Content);
-            Assert.AreEqual("ABECDG", traversal);
+            var actual = "";
+            graph.BFS(node => actual += node.Content);
+            Assert.AreEqual("ABECDG", actual);
         }
 
 
@@ -123,13 +123,13 @@ namespace GraphAlgorithms.test
             Assert.AreEqual("ABECHDGF", bfs);
 
             var edges = graph.UndirectedEdges();
-            var traversal = $"{edges.Length} edges";
+            var actual = $"{edges.Length} edges";
             foreach (var edge in edges)
             {
-                traversal += $", {edge.Item1.Content.ToString()}-{edge.Item3.ToString()}-{edge.Item2.Content.ToString()}";
+                actual += $", {edge.Item1.Content.ToString()}-{edge.Item3.ToString()}-{edge.Item2.Content.ToString()}";
             }
-            var expected = "10 edges, A-20-B, A-18-E, A-11-C, A-7-H, B-10-C, B-21-D, C-15-D, C-30-E, C-14-H, D-17-E";
-            Assert.AreEqual(expected, traversal);
+            var expected = "10 edges, A-20-B, A-8-E, A-11-C, A-7-H, B-18-C, B-21-D, C-15-D, C-30-E, C-14-H, D-12-E";
+            Assert.AreEqual(expected, actual);
         }
 
         [Test()]
@@ -137,13 +137,31 @@ namespace GraphAlgorithms.test
         {
             var graph = MockWeightedGraph();
             var edges = graph.UndirectedEdges();
-            var traversal = $"{edges.Length} edges";
+            var actual = $"{edges.Length} edges";
             foreach (var edge in edges)
             {
-                traversal += $", {edge.Item1.Content.ToString()}-{edge.Item3.ToString()}-{edge.Item2.Content.ToString()}";
+                actual += $", {edge.Item1.Content.ToString()}-{edge.Item3.ToString()}-{edge.Item2.Content.ToString()}";
             }
-            var expected = "7 edges, A-20-B, A-18-E, B-10-C, B-21-D, C-15-D, C-30-E, D-17-E";
-            Assert.AreEqual(expected, traversal);
+            var expected = "7 edges, A-20-B, A-8-E, B-18-C, B-21-D, C-15-D, C-30-E, D-12-E";
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test()]
+        public void TestShortestPath()
+        {
+            var graph = MockWeightedGraph();
+            var a = graph.Find('A');
+            var c = graph.Find('C');
+
+            var actual = "";
+            var shortestPath = graph.ShortestPath(a, c);
+            foreach (var node in shortestPath)
+            {
+                actual += node.Content;
+            }
+
+            var expected = "CDE";
+            Assert.AreEqual(expected, actual);
         }
 
         #region Edge Update Policies (not exhaustive)

@@ -4,9 +4,9 @@ using System.Diagnostics;
 
 namespace GraphAlgorithms
 {
-    public class WeightedNode<CONTENT> : Node<CONTENT>
+    public class WeightedNode<CONTENT> : Node<CONTENT> where CONTENT : IEquatable<CONTENT>
     {
-        protected readonly List<int> Weights; // O(n), must be migrated to a O(1) data structure
+        protected readonly List<double> Costs; // O(n), must be migrated to a O(1) data structure
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:CS201GraphAlgorithms.WeightedNode`1"/> class.
@@ -14,7 +14,7 @@ namespace GraphAlgorithms
         /// <param name="content">The embedded payload of for this node.</param>
         public WeightedNode(CONTENT content) : base(content)
         {
-            Weights = new List<int>();
+            Costs = new List<double>();
         }
 
         /// <summary>
@@ -23,12 +23,13 @@ namespace GraphAlgorithms
         /// </summary>
         /// <returns>Edge weight.</returns>
         /// <param name="neighbor">Neighbor.</param>
-        public int Cost(Node<CONTENT> neighbor)
+        public override double Cost(Node<CONTENT> neighbor)
         {
-            if(!HasNeighbor(neighbor)) {
+            if (!HasNeighbor(neighbor))
+            {
                 throw new KeyNotFoundException("Edge not found");
             }
-            return Weights[IndexOfNeighbor(neighbor)];
+            return Costs[IndexOfNeighbor(neighbor)];
         }
 
         /// <summary>
@@ -37,38 +38,39 @@ namespace GraphAlgorithms
         /// </summary>
         /// <param name="to">To.</param>
         /// <param name="cost">Cost.</param>
-        public virtual void AddDirectedEdge(WeightedNode<CONTENT> to, int cost)
+        public virtual void AddDirectedEdge(WeightedNode<CONTENT> to, double cost)
         {
             base.AddDirectedEdge(to);
-            Weights.Add(cost);
+            Costs.Add(cost);
         }
 
-        public virtual void UpdateDirectedEdge(WeightedNode<CONTENT> to, int cost)
+        public virtual void UpdateDirectedEdge(WeightedNode<CONTENT> to, double cost)
         {
             var indexOfNeighbor = IndexOfNeighbor(to);
             Debug.Assert(indexOfNeighbor >= 0);
             if (indexOfNeighbor >= 0)
             {
-                Weights[indexOfNeighbor] = cost;
+                Costs[indexOfNeighbor] = cost;
             }
         }
 
-        public override void RemoveDirectedEdge(Node<CONTENT> from)
+        public override void RemoveDirectedEdge(Node<CONTENT> node)
         {
-            var indexOfNeighbor = IndexOfNeighbor(from);
-            base.RemoveDirectedEdge(from);
-            Weights.RemoveAt(indexOfNeighbor);
+            var indexOfNeighbor = IndexOfNeighbor(node);
+            base.RemoveDirectedEdge(node);
+            Costs.RemoveAt(indexOfNeighbor);
         }
 
         /// <summary>
         /// Enumerates through the nodes and their weight.
         /// </summary>
         /// <param name="action">Action.</param>
-        public void ForEachNeighborAndCost(Action<KeyValuePair<Node<CONTENT>, int>> action)
+        public void ForEachNeighborAndCost(Action<KeyValuePair<Node<CONTENT>, double>> action)
         {
-            for (int i = 0; i < NeighborsCount; i++) {
-                var nodeAndWeight = new KeyValuePair<Node<CONTENT>, int>(key:  Neighbors[i],
-                                                                         value: Weights[i]);
+            for (int i = 0; i < NeighborsCount; i++)
+            {
+                var nodeAndWeight = new KeyValuePair<Node<CONTENT>, double>(key: Neighbors[i],
+                                                                            value: Costs[i]);
                 action(nodeAndWeight);
             }
         }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GraphAlgorithms
 {
-    public class Node<CONTENT>
+    public class Node<CONTENT> where CONTENT : IEquatable<CONTENT>
     {
         public readonly CONTENT Content;
         protected readonly List<Node<CONTENT>> Neighbors;
@@ -21,12 +21,29 @@ namespace GraphAlgorithms
         }
 
         /// <summary>
+        /// Cost of that edge, to the specified neighbor.
+        /// Neighbor MUST exist
+        /// </summary>
+        /// <returns>1 (always)</returns>
+        /// <param name="neighbor">Neighbor.</param>
+        public virtual double Cost(Node<CONTENT> neighbor)
+        {
+            if (!HasNeighbor(neighbor))
+            {
+                throw new KeyNotFoundException("Edge not found");
+            }
+            return 1.0d;
+        }
+
+        /// <summary>
         /// Adds this edge if it doesn't already exist.
         /// MUST not already exist
         /// </summary>
         /// <param name="to">Node.</param>
-        public virtual void AddDirectedEdge(Node<CONTENT> to) {
-            if(HasNeighbor(to)) {
+        public virtual void AddDirectedEdge(Node<CONTENT> to)
+        {
+            if (HasNeighbor(to))
+            {
                 throw new Exception("Duplicate edge");
             }
             Neighbors.Add(to);
@@ -37,7 +54,8 @@ namespace GraphAlgorithms
         /// Edge MUST already exist
         /// </summary>
         /// <param name="node">Node.</param>
-        public virtual void RemoveDirectedEdge(Node<CONTENT> node) {
+        public virtual void RemoveDirectedEdge(Node<CONTENT> node)
+        {
             if (!HasNeighbor(node))
             {
                 throw new KeyNotFoundException("Edge not found");
@@ -53,10 +71,10 @@ namespace GraphAlgorithms
         /// </summary>
         /// <returns>The found node</returns>
         /// <param name="content">Content.</param>
-        public Node<CONTENT> Find(CONTENT content) => Neighbors.FirstOrDefault(node =>
-                                                                               EqualityComparer<CONTENT>.Default.Equals(
-                                                                                                        node.Content,
-                                                                                                        content));
+        public Node<CONTENT> Find(CONTENT content)
+        {
+            return Neighbors.FirstOrDefault(node => node.Content.Equals(content));
+        }
 
         /// <summary>
         /// Does the present node have this other node as a neighbor.
@@ -78,7 +96,8 @@ namespace GraphAlgorithms
         /// <param name="action">Action.</param>
         public void ForEachNeighbor(Action<Node<CONTENT>> action)
         {
-            foreach(var node in Neighbors) {
+            foreach (var node in Neighbors)
+            {
                 action(node);
             }
         }

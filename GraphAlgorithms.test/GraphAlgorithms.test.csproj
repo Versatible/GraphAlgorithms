@@ -47,6 +47,8 @@
     <Compile Include="tests\NodeTest.cs" />
     <Compile Include="tests\WeightedGraphTest.cs" />
     <Compile Include="tests\WeightedNodeTest.cs" />
+    <Compile Include="tests\EdgeTest.cs" />
+    <Compile Include="tests\UndirectedEdgeTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
